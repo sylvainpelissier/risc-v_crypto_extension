@@ -3,9 +3,15 @@
 .global aes_round_encrypt, aes_expand_key
 
 /*
- * void sm4_expand_key(const u32 *rk, u32 *out, const u32 *in);
+ * uint64_t aes_expand_key(const uint64_t *key, uint64_t *rk);
 */
 aes_expand_key:
+	ld	t0, 0(a0)
+	ld	t1, 8(a0)
+	aes64ks1i t2, t1, 0
+	aes64ks2  t0, t2, t0
+    aes64ks2  t1, t0, t1
+	mv	a0, t2
 	ret
 
 /*

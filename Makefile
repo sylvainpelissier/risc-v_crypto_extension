@@ -14,7 +14,7 @@ aes_encrypt.o: aes.S
 	$(AS) $(AFLAGS) $^ -o $@
 
 run: aes
-	qemu-riscv64 -cpu rv64,zkne=true $^
+	qemu-riscv64 -cpu rv64,zkne=true $^ 000102030405060708090a0b0c0d0e0f 101112131415161718191a1b1c1d1e1f
 
 run-remote: aes
 	qemu-riscv64 -g 1234 ./aes
