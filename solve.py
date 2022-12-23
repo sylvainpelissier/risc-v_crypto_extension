@@ -1,7 +1,7 @@
 import os
 import phoenixAES
 
-from  aes_encrypt import encrypt
+from  risc-v_crypto_extension.challenge.aes_encrypt import encrypt
 from binascii import unhexlify
 from aeskeyschedule import reverse_key_schedule
 

@@ -162,6 +162,40 @@ def riscv_test():
         ref = subprocess.check_output(["qemu-riscv64", "-cpu", "rv64,zkne=true", "aes", f"{hexlify(key).decode()}", f"{hexlify(plaintext).decode()}"])
         assert hexlify(out_put) == ref[:-1]
 
-if __name__ == "__main__":
+def server():
+    print("Welcome to the hardware accelerated encryption.")
     intern_test()
-    riscv_test()
+    print("Internal tests OK...")
+
+if __name__ == "__main__":
+    server()
+    flag = b"INS{AeS_2r0Und5}"
+    print("Reading the key OK...\n")
+
+    while True:
+        print("")
+        key = input("Enter the key: ")
+        plaintext = input("Enter the plaintext: ")
+
+        try:
+            key = bytes.fromhex(key)
+        except (ValueError):
+            print("The key should be 16-byte long in hexadecimal.")
+            continue
+        
+        if len(key) != 16:
+            print("The key should be 16-byte long in hexadecimal.")
+            continue
+
+        try:
+            plaintext = bytes.fromhex(plaintext)
+        except (ValueError):
+            print("The plaintext should be 16-byte long in hexadecimal.")
+            continue
+
+        if len(plaintext) != 16:
+            print("The plaintext should be 16-byte long in hexadecimal.")
+            continue
+
+        out_put = encrypt(key, plaintext)
+        print(f"The ciphertext is: {out_put.hex()}")
