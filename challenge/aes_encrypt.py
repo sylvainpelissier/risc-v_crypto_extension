@@ -6,12 +6,6 @@ from Crypto.Util.strxor import strxor
 
 N_ROUNDS = 2
 
-"""
-key        = unhexlify(b'000102030405060708090a0b0c0d0e0f')
-ciphertext = unhexlify(b'11111111111111111111111111111111')
-plaintext = unhexlify(b'101112131415161718191a1b1c1d1e1f')
-"""
-
 s_box = (
     0x63, 0x7C, 0x77, 0x7B, 0xF2, 0x6B, 0x6F, 0xC5, 0x30, 0x01, 0x67, 0x2B, 0xFE, 0xD7, 0xAB, 0x76,
     0xCA, 0x82, 0xC9, 0x7D, 0xFA, 0x59, 0x47, 0xF0, 0xAD, 0xD4, 0xA2, 0xAF, 0x9C, 0xA4, 0x72, 0xC0,
@@ -163,7 +157,7 @@ def riscv_test():
         assert hexlify(out_put) == ref[:-1]
 
 def server():
-    print("Welcome to the hardware accelerated encryption.")
+    print("Welcome to the hardware accelerated encryption.\n")
     intern_test()
     print("Internal tests OK...")
 
@@ -174,18 +168,7 @@ if __name__ == "__main__":
 
     while True:
         print("")
-        key = input("Enter the key: ")
         plaintext = input("Enter the plaintext: ")
-
-        try:
-            key = bytes.fromhex(key)
-        except (ValueError):
-            print("The key should be 16-byte long in hexadecimal.")
-            continue
-        
-        if len(key) != 16:
-            print("The key should be 16-byte long in hexadecimal.")
-            continue
 
         try:
             plaintext = bytes.fromhex(plaintext)
@@ -197,5 +180,5 @@ if __name__ == "__main__":
             print("The plaintext should be 16-byte long in hexadecimal.")
             continue
 
-        out_put = encrypt(key, plaintext)
+        out_put = encrypt(flag, plaintext)
         print(f"The ciphertext is: {out_put.hex()}")
