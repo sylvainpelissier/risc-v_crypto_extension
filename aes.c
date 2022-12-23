@@ -17,15 +17,15 @@ int main(int argc, char *argv[]) {
 	uint64_t key[2] = {0};
 
 	if (argc != 3) {
-		printf("Usage: ./sm4 <key> <plaintext>\n");
+		printf("Usage: %s <key> <plaintext>\n", argv[0]);
 		return 1;
 	}
 	if (strlen(argv[1]) != 32) {
-		printf("Key should be 16-byte long in hexadecimal.\n");
+		printf("The key should be 16-byte long in hexadecimal.\n");
 		return 1;
 	}
 	if (strlen(argv[2]) != 32) {
-		printf("Plaintext should be 16-byte long in hexadecimal.\n");
+		printf("The plaintext should be 16-byte long in hexadecimal.\n");
 		return 1;
 	}
     
