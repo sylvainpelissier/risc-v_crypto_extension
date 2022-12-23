@@ -1,12 +1,10 @@
-from binascii import unhexlify
+import os
+import subprocess
+
+from binascii import unhexlify, hexlify
 from Crypto.Util.strxor import strxor
 
-N_ROUNDS = 10
-
-key        = unhexlify(b'2b7e151628aed2a6abf7158809cf4f3c')
-ciphertext = unhexlify(b'3ad77bb40d7a3660a89ecaf32466ef97')
-plaintext = unhexlify(b'6bc1bee22e409f96e93d7e117393172a')
-
+N_ROUNDS = 2
 
 """
 key        = unhexlify(b'000102030405060708090a0b0c0d0e0f')
@@ -52,18 +50,15 @@ def shift_rows(s):
     s[0][2], s[1][2], s[2][2], s[3][2] = s[2][2], s[3][2], s[0][2], s[1][2]
     s[0][3], s[1][3], s[2][3], s[3][3] = s[3][3], s[0][3], s[1][3], s[2][3]
 
-# learned from http://cs.ucsb.edu/~koc/cs178/projects/JT/aes.c
 xtime = lambda a: (((a << 1) ^ 0x1B) & 0xFF) if (a & 0x80) else (a << 1)
 
 def mix_single_column(a):
-    # see Sec 4.1.2 in The Design of Rijndael
     t = a[0] ^ a[1] ^ a[2] ^ a[3]
     u = a[0]
     a[0] ^= t ^ xtime(a[0] ^ a[1])
     a[1] ^= t ^ xtime(a[1] ^ a[2])
     a[2] ^= t ^ xtime(a[2] ^ a[3])
     a[3] ^= t ^ xtime(a[3] ^ u)
-
 
 def mix_columns(s):
     for i in range(4):
@@ -74,7 +69,7 @@ def expand_key(master_key):
     Expands and returns a list of key matrices for the given master_key.
     """
 
-    # Round constants https://en.wikipedia.org/wiki/AES_key_schedule#Round_constants
+    # Round constants
     r_con = (
         0x00, 0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40,
         0x80, 0x1B, 0x36, 0x6C, 0xD8, 0xAB, 0x4D, 0x9A,
@@ -152,6 +147,21 @@ def encrypt(key, plaintext):
     ciphertext = matrix2bytes(state)
     return ciphertext
 
+def intern_test():
+    key = unhexlify(b'2b7e151628aed2a6abf7158809cf4f3c')
+    ciphertext = unhexlify(b'7b771db8bac0ea40770d1b5b1314e443')
+    plaintext = unhexlify(b'6bc1bee22e409f96e93d7e117393172a')
+    assert ciphertext == encrypt(key, plaintext)
 
-print(encrypt(key, plaintext).hex())
-assert ciphertext == encrypt(key, plaintext)
+def riscv_test():
+    for i in range(1000):
+        key = os.urandom(16)
+        plaintext = os.urandom(16)
+
+        out_put = encrypt(key, plaintext)
+        ref = subprocess.check_output(["qemu-riscv64", "-cpu", "rv64,zkne=true", "aes", f"{hexlify(key).decode()}", f"{hexlify(plaintext).decode()}"])
+        assert hexlify(out_put) == ref[:-1]
+
+if __name__ == "__main__":
+    intern_test()
+    riscv_test()

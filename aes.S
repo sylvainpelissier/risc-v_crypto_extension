@@ -115,7 +115,7 @@ aes_encrypt:
 	xor	t3, t3, t1
 
 	addi t4, t4, -1
-	bne t4, zero, loop
+	beq t4, zero, loop
 
 	/* Final round */
 	aes64es	t0, t2, t3
