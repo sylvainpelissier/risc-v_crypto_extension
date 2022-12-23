@@ -36,8 +36,6 @@ int main(int argc, char *argv[]) {
 	key[1] = bswap_64(strtoull(key_str, NULL, 16));
 
 	aes_expand_key(key, rk);
-	printf("%016lx%016lx\n", bswap_64(rk[6]), bswap_64(rk[7]));
-	printf("%016lx%016lx\n", bswap_64(rk[20]), bswap_64(rk[21]));
 
 	// Copy plaintext
 	strncpy(in_str, argv[2], 16);
@@ -45,7 +43,6 @@ int main(int argc, char *argv[]) {
 	strncpy(in_str, argv[2] + 16, 16);
 	in[1] = bswap_64(strtoull(in_str, NULL, 16));
 
-	printf("%016lx%016lx\n", bswap_64(in[0]), bswap_64(in[1]));
 	aes_encrypt(rk, in, out);
     printf("%016lx%016lx\n", bswap_64(out[0]), bswap_64(out[1]));
     return 0;

@@ -89,16 +89,42 @@ aes_expand_key:
  * void aes_encrypt(const uint64_t *rk, uint64_t *plaintext, uint64_t *ciphertext);
 */
 aes_encrypt:
-	ld	t0, 0(a0)
-	ld	t1, 8(a0)
 	ld	t2, 0(a1)
 	ld	t3, 8(a1)
+	li	t4, 9
+	mv 	t5, a0
 
-	xor			t2, t2, t0
-	xor			t3, t3, t1
-    aes64esm	t2, t2, t3
-	aes64esm	t3, t3, t2
+	/* Add round key */
+	ld	t0, 0(t5)
+	ld	t1, 8(t5)
+	addi t5, t5, 16
+	xor	t2, t2, t0
+	xor	t3, t3, t1
+
+	loop:
+
+	/* Rest of the round */
+    aes64esm	t0, t2, t3
+	aes64esm	t1, t3, t2
 	
+	/* Add round key */
+	ld	t2, 0(t5)
+	ld	t3, 8(t5)
+	addi t5, t5, 16
+	xor	t2, t2, t0
+	xor	t3, t3, t1
+
+	addi t4, t4, -1
+	bne t4, zero, loop
+
+	/* Final round */
+	aes64es	t0, t2, t3
+	aes64es	t1, t3, t2
+	ld	t2, 0(t5)
+	ld	t3, 8(t5)
+	xor	t2, t2, t0
+	xor	t3, t3, t1
+
 	sd t2, 0(a2)
 	sd t3, 8(a2)
 	ret
