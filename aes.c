@@ -1,4 +1,4 @@
-/* sm4.c */
+/* aes.c */
 #include <stdio.h>
 #include <stdint.h>
 #include <string.h>
@@ -35,6 +35,7 @@ int main(int argc, char *argv[]) {
 	strncpy(key_str, argv[1] + 16, 16);
 	key[1] = bswap_64(strtoull(key_str, NULL, 16));
 
+	// Key schedule
 	aes_expand_key(key, rk);
 
 	// Copy plaintext
@@ -43,6 +44,7 @@ int main(int argc, char *argv[]) {
 	strncpy(in_str, argv[2] + 16, 16);
 	in[1] = bswap_64(strtoull(in_str, NULL, 16));
 
+	// Encryption
 	aes_encrypt(rk, in, out);
     printf("%016lx%016lx\n", bswap_64(out[0]), bswap_64(out[1]));
     return 0;

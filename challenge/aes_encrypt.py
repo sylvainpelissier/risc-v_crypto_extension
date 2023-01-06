@@ -4,6 +4,7 @@ import subprocess
 from binascii import unhexlify, hexlify
 from Crypto.Util.strxor import strxor
 
+# For the CTF, it should be 10 for real AES.
 N_ROUNDS = 2
 
 s_box = (
@@ -90,10 +91,6 @@ def expand_key(master_key):
             # XOR with first byte of R-CON, since the others bytes of R-CON are 0.
             word[0] ^= r_con[i]
             i += 1
-        elif len(master_key) == 32 and len(key_columns) % iteration_size == 4:
-            # Run word through S-box in the fourth iteration when using a
-            # 256-bit key.
-            word = [s_box[b] for b in word]
 
         # XOR with equivalent word from previous iteration.
         word = bytes(i^j for i, j in zip(word, key_columns[-iteration_size]))
@@ -156,13 +153,10 @@ def riscv_test():
         ref = subprocess.check_output(["qemu-riscv64", "-cpu", "rv64,zkne=true", "aes", f"{hexlify(key).decode()}", f"{hexlify(plaintext).decode()}"])
         assert hexlify(out_put) == ref[:-1]
 
-def server():
+if __name__ == "__main__":
     print("Welcome to the hardware accelerated encryption.\n")
     intern_test()
     print("Internal tests OK...")
-
-if __name__ == "__main__":
-    server()
     flag = b"INS{AeS_2r0Und5}"
     print("Reading the key OK...\n")
 
