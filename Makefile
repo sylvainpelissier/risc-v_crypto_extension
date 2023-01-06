@@ -1,7 +1,7 @@
 AS=riscv64-linux-gnu-as
 CC=riscv64-linux-gnu-gcc
 LD=riscv64-linux-gnu-ld
-CFLAGS=-march=rv64ifdzk -static -O3
+CFLAGS=-march=rv64ifdzk -static -O3 -Wall
 AFLAGS=-march=rv64ifdzk
 
 aes: aes.o aes_encrypt.o

@@ -1,4 +1,4 @@
-# RISC-V Cryptography extension
+# Acceleration
 
 ## Description of the challenge
 I implemented my encryption using the hardware acceleration. It is faster than I expected ! And you wil never recover the key !
@@ -18,7 +18,7 @@ $ docker build -t acceleration .
 $ docker run -p:128:128 acceleration
 ```
 
-The binary `aes` have to be shared with the participants but not the Python file `aes_encrypt.py`, it contains the flag.
+The binary `challenge/aes` have to be shared with the participants but not the Python file `challenge/aes_encrypt.py`, it contains the flag.
 
 # Solution
 

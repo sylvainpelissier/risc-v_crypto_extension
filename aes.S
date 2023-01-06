@@ -115,6 +115,7 @@ aes_encrypt:
 	xor	t3, t3, t1
 
 	addi t4, t4, -1
+	
 	# It should be bne instruction for normal AES.
 	beq t4, zero, loop
 
